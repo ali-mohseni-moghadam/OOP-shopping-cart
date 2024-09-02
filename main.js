@@ -10,8 +10,13 @@ const totalPriceNode = document
 
 const render = async () => {
   const productsData = await fetchData();
-  const productsIntance = new Products(productsNode, productsData);
+
   const cartInstance = new Cart(cartListNode, totalPriceNode);
+  const productsIntance = new Products(
+    productsNode,
+    productsData,
+    cartInstance
+  );
 
   productsIntance.showProducts();
 };
