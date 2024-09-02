@@ -4,6 +4,7 @@ class Cart {
     this.price = price;
     this.products = [];
     this.toShow = [];
+    this.parent.addEventListener("click", this);
   }
 
   showProducts() {
@@ -13,6 +14,8 @@ class Cart {
       const qty = this.products.filter((p) => p.id === product.id).length;
       this.createCard(product, qty);
     });
+
+    this.calculateTotalPrice();
   }
 
   createCard(data, qty) {
@@ -65,6 +68,46 @@ class Cart {
     `;
 
     return controlJSX;
+  }
+
+  handleEvent(event) {
+    const tagName = event.target.tagName;
+    const id = event.target.dataset.id;
+    const type = event.target.innerText;
+
+    if (tagName !== "BUTTON") return;
+    switch (type) {
+      case "+":
+        this.increase(id);
+        break;
+      case "-":
+        this.decrease(id);
+        break;
+      case "Remove":
+        this.remove(id);
+        break;
+    }
+  }
+
+  increase(id) {
+    const product = this.products.find((product) => product.id === +id);
+    this.products.push(product);
+    this.showProducts();
+  }
+  decrease(id) {
+    const index = this.products.findIndex((product) => product.id === +id);
+    this.products.splice(index, 1);
+    this.showProducts();
+  }
+  remove(id) {
+    const newProducts = this.products.filter((products) => products.id !== +id);
+    this.products = newProducts;
+    this.showProducts();
+  }
+
+  calculateTotalPrice() {
+    const total = this.products.reduce((acc, cur) => (acc += cur.price), 0);
+    this.price.innerText = "$ " + total;
   }
 }
 
